@@ -20,7 +20,7 @@
                             <div class="result-details">
                                 <h2>{{ result.title.romaji }}</h2>
                                 <p>{{ result.description | safe }}</p>
-                                <a href="https://anilist.co/anime/{{ result.id }}" target="_blank">Más información</a>
+                                <a href="{{ url_for('details', item_id=result.id) }}">Más información</a>
                             </div>
                         {% endif %}
                     </li>
@@ -40,9 +40,9 @@
             </ul>
             <div class="pagination">
                 {% if page > 1 %}
-                    <a href="{{ url_for('search', query=query, search_type=search_type, page=page-1) }}">Anterior</a>
+                    <a href="{{ url_for('search', query=query, search_type=search_type, filter_type=filter_type, page=page-1) }}">Anterior</a>
                 {% endif %}
-                <a href="{{ url_for('search', query=query, search_type=search_type, page=page+1) }}">Siguiente</a>
+                <a href="{{ url_for('search', query=query, search_type=search_type, filter_type=filter_type, page=page+1) }}">Siguiente</a>
             </div>
         {% else %}
             <p>No se ha encontrado lo que buscabas.</p>
