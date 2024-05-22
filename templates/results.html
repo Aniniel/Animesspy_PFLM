@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de la Búsqueda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Resultados de la Búsqueda</h1>
+    </header>
+    <main class="container results">
+        <div class="filter">
+            <form action="/filter" method="get">
+                <input type="hidden" name="query" value="{{ query }}">
+                <input type="hidden" name="search_type" value="{{ search_type }}">
+                <label for="filter_type">Filtrar por:</label>
+                <select id="filter_type" name="filter_type" onchange="this.form.submit()">
+                    <option value="title" {% if filter_type == 'title' %}selected{% endif %}>Titulo</option>
+                    <option value="popularity" {% if filter_type == 'popularity' %}selected{% endif %}>Popularidad</option>
+                    <option value="average score" {% if filter_type == 'average score' %}selected{% endif %}>Media</option>
+                    <option value="trending" {% if filter_type == 'trending' %}selected{% endif %}>Trending</option>
+                    <option value="favorites" {% if filter_type == 'favorites' %}selected{% endif %}>Favoritos</option>
+                    <option value="date added" {% if filter_type == 'date added' %}selected{% endif %}>Fecha añadido</option>
+                    <option value="release date" {% if filter_type == 'release date' %}selected{% endif %}>Fecha salida</option>
+                </select>
+            </form>
+        </div>
+        {% if results %}
+            <ul>
+                {% for result in results.media %}
+                    <li class="result-item">
+                        {% if search_type == 'anime' %}
+                            <img src="{{ result.coverImage.medium }}" alt="{{ result.title.romaji }}">
+                            <div class="result-details">
+                                <h2>{{ result.title.romaji }}</h2>
+                                <p>{{ result.description | safe }}</p>
+                                <a href="{{ url_for('details', item_id=result.id) }}">Más información</a>
+                            </div>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                {% for result in results.characters %}
+                    <li class="result-item">
+                        {% if search_type == 'characters' %}
+                            <img src="{{ result.image.medium }}" alt="{{ result.name.full }}">
+                            <div class="result-details">
+                                <h2>{{ result.name.full }}</h2>
+                                <p>{{ result.description | safe }}</p>
+                                <a href="https://anilist.co/character/{{ result.id }}" target="_blank">Más información</a>
+                            </div>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="pagination">
+                {% if page > 1 %}
+                    <a href="{{ url_for('search', query=query, search_type=search_type, page=page-1) }}">Anterior</a>
+                {% endif %}
+                <a href="{{ url_for('search', query=query, search_type=search_type, page=page+1) }}">Siguiente</a>
+            </div>
+        {% else %}
+            <p>No se ha encontrado lo que buscabas.</p>
+        {% endif %}
+        <a href="/">Volver a la búsqueda</a>
+    </main>
+    <footer>
+        <p>&copy; 2023 Anime Info App. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
